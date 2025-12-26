@@ -32,7 +32,7 @@ const AnimatedNumber = ({ value }: { value: string }) => {
   return <span>{displayValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>;
 };
 
-const RaffleView: React.FC = () => {
+const RaffleView = () => {
   const { address } = useAccount();
   const [ticketAmount, setTicketAmount] = useState('1');
   const [timeData, setTimeData] = useState({ h: '00', m: '00', s: '00' });
@@ -165,7 +165,6 @@ const RaffleView: React.FC = () => {
                   <input 
                     type="number" 
                     value={ticketAmount} 
-                    // Cast event to any to access target.value in environments with native Event types for React handlers
                     onChange={(e: any) => setTicketAmount(e.target.value)}
                     class="w-full bg-transparent text-5xl md:text-7xl font-black border-none focus:ring-0 p-0 text-white placeholder:text-gray-800"
                     min="1"
@@ -232,7 +231,6 @@ const RaffleView: React.FC = () => {
   );
 
   function handleApprove() {
-    // Explicitly provide account and chain to resolve wagmi v2 type missing property errors
     if (!address) return;
     writeContract({
       address: ADDRESSES.USDC,
@@ -245,7 +243,6 @@ const RaffleView: React.FC = () => {
   }
 
   function handleBuyTickets() {
-    // Explicitly provide account and chain to resolve wagmi v2 type missing property errors
     if (!ticketAmount || parseInt(ticketAmount) <= 0 || !address) return;
     writeContract({
       address: ADDRESSES.RAFFLE_ROUND_ACTIVE,

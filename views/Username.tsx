@@ -6,7 +6,7 @@ import { arbitrum } from 'wagmi/chains';
 import { ADDRESSES, ABIS } from '../constants';
 import { UserPlus, CheckCircle2, XCircle, Search, Loader2 } from 'lucide-react';
 
-const UsernameView: React.FC = () => {
+const UsernameView = () => {
   const { address } = useAccount();
   const [usernameInput, setUsernameInput] = useState('');
   
@@ -36,9 +36,7 @@ const UsernameView: React.FC = () => {
   }, [isSuccess, refetchUsername]);
 
   const handleRegister = () => {
-    // Ensure both usernameInput and address are available before proceeding
     if (!usernameInput || !address) return;
-    // Explicitly provide account and chain to resolve wagmi v2 type missing property errors
     writeContract({
       address: ADDRESSES.USERNAME_REGISTRY,
       abi: ABIS.USERNAME_REGISTRY,
@@ -78,7 +76,6 @@ const UsernameView: React.FC = () => {
               <input
                 type="text"
                 value={usernameInput}
-                // Cast event to any to access target.value in environments with native Event types for React handlers
                 onChange={(e: any) => setUsernameInput(e.target.value)}
                 placeholder="Enter username (min 3 chars)..."
                 class="w-full bg-gray-900/50 border border-gray-800 rounded-2xl py-4 pl-12 pr-4 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all placeholder:text-gray-700"

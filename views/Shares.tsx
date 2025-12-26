@@ -7,7 +7,7 @@ import { formatUnits } from 'viem';
 import { ADDRESSES, ABIS } from '../constants';
 import { PieChart, ShoppingCart, ShieldCheck, Loader2, AlertCircle, TrendingUp, Gift } from 'lucide-react';
 
-const SharesView: React.FC = () => {
+const SharesView = () => {
   const { address } = useAccount();
   const [amount, setAmount] = useState('1');
   const [claimRoundId, setClaimRoundId] = useState('0');
@@ -48,7 +48,6 @@ const SharesView: React.FC = () => {
   const needsApproval = (allowance || 0n) < usdcRequired;
 
   const handleApprove = () => {
-    // Explicitly provide account and chain to resolve wagmi v2 type missing property errors
     if (!address) return;
     writeContract({
       address: ADDRESSES.USDC,
@@ -61,7 +60,6 @@ const SharesView: React.FC = () => {
   };
 
   const handleBuy = () => {
-    // Explicitly provide account and chain to resolve wagmi v2 type missing property errors
     if (!parsedAmount || isNaN(parsedAmount) || !address) return;
     writeContract({
       address: ADDRESSES.SHARES_REGISTRY,
@@ -74,7 +72,6 @@ const SharesView: React.FC = () => {
   };
 
   const handleClaim = () => {
-    // Explicitly provide account and chain to resolve wagmi v2 type missing property errors
     if (!claimRoundId || !address) return;
     writeContract({
       address: ADDRESSES.SHARES_REGISTRY,
@@ -109,7 +106,6 @@ const SharesView: React.FC = () => {
               <input
                 type="number"
                 value={amount}
-                // Cast event to any to access target.value in environments with native Event types for React handlers
                 onChange={(e: any) => setAmount(e.target.value)}
                 class="w-full bg-gray-900/50 border border-gray-800 rounded-3xl py-6 px-6 text-3xl font-bold focus:outline-none focus:ring-2 focus:ring-purple-500/40 transition-all"
                 min="1"
@@ -155,7 +151,6 @@ const SharesView: React.FC = () => {
              <input
                 type="number"
                 value={claimRoundId}
-                // Cast event to any to access target.value in environments with native Event types for React handlers
                 onChange={(e: any) => setClaimRoundId(e.target.value)}
                 placeholder="Round ID"
                 class="flex-1 bg-gray-900/50 border border-gray-800 rounded-2xl py-3 px-4 focus:outline-none"
@@ -194,7 +189,7 @@ const SharesView: React.FC = () => {
   );
 };
 
-const StatRow: React.FC<{ label: string; value: string; sub: string }> = ({ label, value, sub }) => (
+const StatRow = ({ label, value, sub }: { label: string; value: string; sub: string }) => (
   <div class="flex justify-between items-end">
     <div>
       <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">{label}</p>

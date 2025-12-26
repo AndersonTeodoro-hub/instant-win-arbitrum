@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
-// Use a more resilient import for react-router-dom to handle possible export issues in the environment
-import * as RRD from 'react-router-dom';
+import { HashRouter, Routes, Route, NavLink } from 'react-router-dom';
 import { useAccount, useConnect, useDisconnect, useChainId, useSwitchChain } from 'wagmi';
 import { arbitrum } from 'wagmi/chains';
 import { Wallet, LayoutDashboard, UserPlus, PieChart, Trophy, Power, AlertTriangle, Menu, X } from 'lucide-react';
@@ -10,10 +9,7 @@ import UsernameView from './views/Username';
 import SharesView from './views/Shares';
 import RaffleView from './views/Raffle';
 
-// Extract components with any cast to bypass "no exported member" and prop errors
-const { HashRouter, Routes, Route, NavLink } = RRD as any;
-
-const App: React.FC = () => {
+const App = () => {
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
@@ -120,17 +116,14 @@ const App: React.FC = () => {
   );
 };
 
-const MobileNavLink: React.FC<{ to: string; onClick: () => void; icon: React.ReactNode; label: string }> = ({ to, onClick, icon, label }) => (
+const MobileNavLink = ({ to, onClick, icon, label }: { to: string; onClick: () => void; icon: React.ReactNode; label: string }) => (
   <NavLink
     to={to}
     onClick={onClick}
-    // Use any cast for NavLink's className/class prop function as it varies between router versions and environments
-    {...({
-      class: ({ isActive }: any) => `
-        flex items-center gap-4 px-8 py-6 rounded-[2rem] border transition-all duration-300
-        ${isActive ? 'bg-yellow-500/10 border-yellow-500/30 text-yellow-500' : 'bg-white/5 border-white/5 text-gray-400 hover:text-white'}
-      `
-    } as any)}
+    className={({ isActive }: { isActive: boolean }) => `
+      flex items-center gap-4 px-8 py-6 rounded-[2rem] border transition-all duration-300
+      ${isActive ? 'bg-yellow-500/10 border-yellow-500/30 text-yellow-500' : 'bg-white/5 border-white/5 text-gray-400 hover:text-white'}
+    `}
   >
     {React.isValidElement(icon) ? React.cloneElement(icon as React.ReactElement<any>, { size: 24 }) : icon}
     <span class="text-xl font-black uppercase tracking-tight">{label}</span>

@@ -5,7 +5,12 @@ import { formatUnits } from 'viem';
 import { ADDRESSES, ABIS } from '../constants';
 import { Wallet, CircleUser, TrendingUp, Info, Trophy, ExternalLink } from 'lucide-react';
 
-const Dashboard: React.FC = () => {
+// Moved component to top and updated to use 'class' prop
+const ShieldCheck = ({ class: className }: { class?: string }) => (
+  <svg class={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+);
+
+const Dashboard = () => {
   const { address, isConnected } = useAccount();
 
   const { data: usdcBalance } = useReadContract({
@@ -138,10 +143,5 @@ const Dashboard: React.FC = () => {
     </div>
   );
 };
-
-// Use any to bypass className errors on custom SVG component in the specific environment
-const ShieldCheck: React.FC<any> = ({ class: className }) => (
-  <svg class={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
-);
 
 export default Dashboard;
