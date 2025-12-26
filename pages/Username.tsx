@@ -2,7 +2,6 @@
 /* Fix: Added @ts-nocheck to resolve mass JSX attribute type errors (e.g., 'className' not existing on 'HTMLAttributes & ReservedProps') which appear to be caused by a type system conflict in the environment. */
 import React, { useState, useEffect } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-// Import arbitrum chain for explicit inclusion in writeContract calls
 import { arbitrum } from 'wagmi/chains';
 import { ADDRESSES, ABIS } from '../constants';
 import { UserPlus, CheckCircle2, XCircle, Search, Loader2 } from 'lucide-react';
@@ -126,7 +125,7 @@ const UsernameView = () => {
           {writeError && (
             <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs flex gap-2">
               <XCircle className="shrink-0" size={16} />
-              <span>{writeError.message.includes('UsernameAlreadyTaken') ? 'This username is already taken.' : 'Failed to register. Ensure you don\'t already have a username.'}</span>
+              <span>Failed to register. Ensure requirements are met.</span>
             </div>
           )}
         </div>

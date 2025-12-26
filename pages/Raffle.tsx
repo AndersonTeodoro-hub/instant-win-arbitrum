@@ -2,12 +2,11 @@
 /* Fix: Added @ts-nocheck to resolve mass JSX attribute type errors (e.g., 'className' not existing on 'HTMLAttributes & ReservedProps') which appear to be caused by a type system conflict in the environment. */
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-// Import arbitrum chain for explicit inclusion in writeContract calls
 import { arbitrum } from 'wagmi/chains';
 import { formatUnits } from 'viem';
 import { ADDRESSES, ABIS } from '../constants';
 import { calculatePrizeSplit } from '../utils/prizeSplit';
-import { Trophy, Clock, Ticket, ShieldCheck, Info, ChevronRight, CheckCircle, Zap, Activity, Globe, Loader2, ExternalLink } from 'lucide-react';
+import { Trophy, Clock, Ticket, ShieldCheck, Zap, Activity, Loader2, ExternalLink } from 'lucide-react';
 
 const AnimatedNumber = ({ value }: { value: string }) => {
   const [displayValue, setDisplayValue] = useState(0);
@@ -96,7 +95,7 @@ const RaffleView = () => {
       refetchTickets();
       refetchAllowance();
     }
-  }, [isSuccess]);
+  }, [isSuccess, refetchPool, refetchTickets, refetchAllowance]);
 
   const prizePool = totalPool || 0n;
   const splits = useMemo(() => calculatePrizeSplit(prizePool), [prizePool]);
@@ -104,12 +103,33 @@ const RaffleView = () => {
   const amountToPay = BigInt(parseInt(ticketAmount || '0')) * currentTicketPrice;
   const needsApproval = (allowance || 0n) < amountToPay;
 
+  const handleApprove = () => {
+    if (!address) return;
+    writeContract({
+      address: ADDRESSES.USDC,
+      abi: ABIS.USDC,
+      functionName: 'approve',
+      args: [ADDRESSES.RAFFLE_ROUND_ACTIVE, BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")],
+      account: address,
+      chain: arbitrum,
+    });
+  };
+
+  const handleBuyTickets = () => {
+    if (!ticketAmount || parseInt(ticketAmount) <= 0 || !address) return;
+    writeContract({
+      address: ADDRESSES.RAFFLE_ROUND_ACTIVE,
+      abi: ABIS.RAFFLE_ROUND,
+      functionName: 'buyTickets',
+      args: [BigInt(ticketAmount)],
+      account: address,
+      chain: arbitrum,
+    });
+  };
+
   return (
     <div className="space-y-16 md:space-y-24">
-      
-      {/* SEÇÃO PRINCIPAL: THE GOLDEN POOL */}
       <section className="relative text-center">
-        {/* Background Aura */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[600px] -z-10 pointer-events-none">
           <div className="absolute inset-0 bg-yellow-500/10 blur-[150px] rounded-full animate-pulse" />
         </div>
@@ -136,9 +156,7 @@ const RaffleView = () => {
             <Clock className="text-blue-500" size={24} />
             <div className="text-left">
               <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest mb-0.5">Time Left</p>
-              <p className="text-2xl font-mono font-bold text-white leading-none">
-                {timeData.h}:{timeData.m}:{timeData.s}
-              </p>
+              <p className="text-2xl font-mono font-bold text-white leading-none">{timeData.h}:{timeData.m}:{timeData.s}</p>
             </div>
           </div>
           <div className="flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-4 rounded-[2rem] w-full sm:w-auto">
@@ -151,7 +169,6 @@ const RaffleView = () => {
         </div>
       </section>
 
-      {/* PAINEL DE CONTROLE */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 px-2 md:px-0">
         <div className="lg:col-span-8 bg-[#0a0a0a] border border-white/5 rounded-[3rem] p-6 md:p-12 shadow-2xl overflow-hidden relative group">
           <div className="relative z-10 flex flex-col md:flex-row gap-12">
@@ -175,15 +192,15 @@ const RaffleView = () => {
 
               {isSuccess ? (
                 <div className="bg-green-500 p-6 rounded-3xl flex items-center justify-center gap-3 font-black text-white animate-in zoom-in">
-                  <CheckCircle size={28} /> TICKETS SECURED!
+                  TICKETS SECURED!
                 </div>
               ) : needsApproval ? (
-                <button onClick={handleApprove} disabled={isPending || isConfirming} className="w-full bg-blue-600 text-white py-6 md:py-8 rounded-[2rem] font-black text-xl md:text-2xl hover:bg-blue-500 transition-all flex items-center justify-center gap-3 shadow-[0_20px_40px_rgba(37,99,235,0.2)]">
+                <button onClick={handleApprove} disabled={isPending || isConfirming} className="w-full bg-blue-600 text-white py-6 md:py-8 rounded-[2rem] font-black text-xl md:text-2xl hover:bg-blue-500 transition-all flex items-center justify-center gap-3">
                   { (isPending || isConfirming) ? <Loader2 className="animate-spin" /> : <ShieldCheck size={28} />}
                   APPROVE USDC
                 </button>
               ) : (
-                <button onClick={handleBuyTickets} disabled={isPending || isConfirming} className="w-full bg-yellow-500 text-black py-6 md:py-8 rounded-[2rem] font-black text-xl md:text-2xl hover:bg-yellow-400 transition-all flex items-center justify-center gap-3 shadow-[0_20px_40px_rgba(234,179,8,0.2)]">
+                <button onClick={handleBuyTickets} disabled={isPending || isConfirming} className="w-full bg-yellow-500 text-black py-6 md:py-8 rounded-[2rem] font-black text-xl md:text-2xl hover:bg-yellow-400 transition-all flex items-center justify-center gap-3">
                   { (isPending || isConfirming) ? <Loader2 className="animate-spin" /> : <Zap size={28} />}
                   BUY TICKETS
                 </button>
@@ -196,14 +213,9 @@ const RaffleView = () => {
                   <PrizeMiniRow label="1st Place (50%)" value={formatUnits(splits.winners.first, 6)} color="text-yellow-500" />
                   <PrizeMiniRow label="2nd Place (18%)" value={formatUnits(splits.winners.second, 6)} color="text-gray-300" />
                   <PrizeMiniRow label="3rd Place (7%)" value={formatUnits(splits.winners.third, 6)} color="text-orange-500" />
-                  <div className="pt-4 border-t border-white/5">
-                    <PrizeMiniRow label="Shareholders" value={formatUnits(splits.platform.investors, 6)} color="text-purple-500" />
-                  </div>
                </div>
             </div>
           </div>
-          {/* Animated Glow */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/5 blur-[100px] rounded-full group-hover:bg-yellow-500/10 transition-colors" />
         </div>
 
         <div className="lg:col-span-4 flex flex-col gap-6">
@@ -214,14 +226,11 @@ const RaffleView = () => {
               <div className="space-y-4">
                  <ActivityRow label="Network" value="Arbitrum One" />
                  <ActivityRow label="Security" value="Chainlink VRF" />
-                 <ActivityRow label="Frequency" value="Every 24h" />
               </div>
            </div>
-           
            <div className="flex-1 bg-gradient-to-br from-blue-600/20 to-purple-600/20 border border-white/10 rounded-[2.5rem] p-8 flex flex-col justify-center items-center text-center">
               <ShieldCheck className="text-blue-500 mb-4" size={40} />
               <h4 className="text-lg font-black uppercase mb-2 leading-tight">Provably Fair</h4>
-              <p className="text-xs text-gray-500 mb-6">Todos os resultados são gerados on-chain com criptografia verificável.</p>
               <a href={`https://arbiscan.io/address/${ADDRESSES.RAFFLE_ROUND_ACTIVE}`} target="_blank" className="text-[10px] font-black text-blue-400 uppercase tracking-widest flex items-center gap-2">
                  Verify Contract <ExternalLink size={12} />
               </a>
@@ -230,30 +239,6 @@ const RaffleView = () => {
       </section>
     </div>
   );
-
-  function handleApprove() {
-    if (!address) return;
-    writeContract({
-      address: ADDRESSES.USDC,
-      abi: ABIS.USDC,
-      functionName: 'approve',
-      args: [ADDRESSES.RAFFLE_ROUND_ACTIVE, BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")],
-      account: address,
-      chain: arbitrum,
-    });
-  }
-
-  function handleBuyTickets() {
-    if (!ticketAmount || parseInt(ticketAmount) <= 0 || !address) return;
-    writeContract({
-      address: ADDRESSES.RAFFLE_ROUND_ACTIVE,
-      abi: ABIS.RAFFLE_ROUND,
-      functionName: 'buyTickets',
-      args: [BigInt(ticketAmount)],
-      account: address,
-      chain: arbitrum,
-    });
-  }
 };
 
 const PrizeMiniRow = ({ label, value, color }: { label: string; value: string; color: string }) => (

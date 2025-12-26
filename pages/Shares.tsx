@@ -2,7 +2,6 @@
 /* Fix: Added @ts-nocheck to resolve mass JSX attribute type errors (e.g., 'className' not existing on 'HTMLAttributes & ReservedProps') which appear to be caused by a type system conflict in the environment. */
 import React, { useState } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-// Import arbitrum chain for explicit inclusion in writeContract calls
 import { arbitrum } from 'wagmi/chains';
 import { formatUnits } from 'viem';
 import { ADDRESSES, ABIS } from '../constants';
@@ -45,7 +44,6 @@ const SharesView = () => {
 
   const parsedAmount = parseInt(amount || '0');
   const usdcRequired = BigInt(isNaN(parsedAmount) ? 0 : parsedAmount * 1_000_000); 
-
   const needsApproval = (allowance || 0n) < usdcRequired;
 
   const handleApprove = () => {

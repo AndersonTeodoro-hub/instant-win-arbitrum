@@ -4,11 +4,7 @@ import React from 'react';
 import { useAccount, useReadContract } from 'wagmi';
 import { formatUnits } from 'viem';
 import { ADDRESSES, ABIS } from '../constants';
-import { Wallet, CircleUser, TrendingUp, Info, Trophy, ExternalLink } from 'lucide-react';
-
-const ShieldCheck = ({ className }: { className?: string }) => (
-  <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
-);
+import { Wallet, CircleUser, TrendingUp, Trophy, ExternalLink, ShieldCheck } from 'lucide-react';
 
 const Dashboard = () => {
   const { address, isConnected } = useAccount();
@@ -56,7 +52,6 @@ const Dashboard = () => {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* User Card */}
         <div className="bg-[#111] p-6 rounded-3xl border border-gray-800 shadow-sm hover:border-blue-500/30 transition-all">
           <div className="flex justify-between items-start mb-4">
             <div className="p-3 bg-blue-500/10 rounded-2xl">
@@ -70,7 +65,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Balance Card */}
         <div className="bg-[#111] p-6 rounded-3xl border border-gray-800 shadow-sm hover:border-green-500/30 transition-all">
           <div className="flex justify-between items-start mb-4">
             <div className="p-3 bg-green-500/10 rounded-2xl">
@@ -84,7 +78,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Raffle Pool Card */}
         <div className="bg-[#111] p-6 rounded-3xl border border-gray-800 shadow-sm border-yellow-500/20 hover:border-yellow-500/40 transition-all">
           <div className="flex justify-between items-start mb-4">
             <div className="p-3 bg-yellow-500/10 rounded-2xl">
@@ -98,7 +91,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Shares Card */}
         <div className="bg-[#111] p-6 rounded-3xl border border-gray-800 shadow-sm hover:border-purple-500/30 transition-all">
           <div className="flex justify-between items-start mb-4">
             <div className="p-3 bg-purple-500/10 rounded-2xl">
@@ -112,7 +104,6 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Protocol Banner */}
       <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-10 rounded-[2.5rem] text-white relative overflow-hidden shadow-2xl">
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           <div>
@@ -137,7 +128,6 @@ const Dashboard = () => {
              </div>
           </div>
         </div>
-        {/* Decor */}
         <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-white/5 rounded-full -mr-40 -mt-40 blur-[100px]" />
       </div>
     </div>
