@@ -1,6 +1,8 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+// Import arbitrum chain for explicit inclusion in writeContract calls
+import { arbitrum } from 'wagmi/chains';
 import { formatUnits } from 'viem';
 import { ADDRESSES, ABIS } from '../constants';
 import { calculatePrizeSplit } from '../utils/prizeSplit';
@@ -230,21 +232,28 @@ const RaffleView: React.FC = () => {
   );
 
   function handleApprove() {
+    // Explicitly provide account and chain to resolve wagmi v2 type missing property errors
+    if (!address) return;
     writeContract({
       address: ADDRESSES.USDC,
       abi: ABIS.USDC,
       functionName: 'approve',
       args: [ADDRESSES.RAFFLE_ROUND_ACTIVE, BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")],
+      account: address,
+      chain: arbitrum,
     });
   }
 
   function handleBuyTickets() {
-    if (!ticketAmount || parseInt(ticketAmount) <= 0) return;
+    // Explicitly provide account and chain to resolve wagmi v2 type missing property errors
+    if (!ticketAmount || parseInt(ticketAmount) <= 0 || !address) return;
     writeContract({
       address: ADDRESSES.RAFFLE_ROUND_ACTIVE,
       abi: ABIS.RAFFLE_ROUND,
       functionName: 'buyTickets',
       args: [BigInt(ticketAmount)],
+      account: address,
+      chain: arbitrum,
     });
   }
 };

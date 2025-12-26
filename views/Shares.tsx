@@ -1,6 +1,8 @@
 
 import React, { useState } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+// Import arbitrum chain for explicit inclusion in writeContract calls
+import { arbitrum } from 'wagmi/chains';
 import { formatUnits } from 'viem';
 import { ADDRESSES, ABIS } from '../constants';
 import { PieChart, ShoppingCart, ShieldCheck, Loader2, AlertCircle, TrendingUp, Gift } from 'lucide-react';
@@ -10,7 +12,6 @@ const SharesView: React.FC = () => {
   const [amount, setAmount] = useState('1');
   const [claimRoundId, setClaimRoundId] = useState('0');
 
-  // On-chain reads
   const { data: usdcBalance } = useReadContract({
     address: ADDRESSES.USDC,
     abi: ABIS.USDC,
@@ -31,11 +32,9 @@ const SharesView: React.FC = () => {
     functionName: 'getSharesAvailable',
   });
 
-  // Write actions
   const { writeContract, data: txHash, isPending: isTxPending } = useWriteContract();
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash: txHash });
 
-  // Handle Success
   React.useEffect(() => {
     if (isSuccess) {
       refetchAllowance();
@@ -44,41 +43,52 @@ const SharesView: React.FC = () => {
   }, [isSuccess, refetchAllowance, refetchShares]);
 
   const parsedAmount = parseInt(amount || '0');
-  const usdcRequired = BigInt(parsedAmount * 1_000_000); 
+  const usdcRequired = BigInt(isNaN(parsedAmount) ? 0 : parsedAmount * 1_000_000); 
 
   const needsApproval = (allowance || 0n) < usdcRequired;
 
   const handleApprove = () => {
+    // Explicitly provide account and chain to resolve wagmi v2 type missing property errors
+    if (!address) return;
     writeContract({
       address: ADDRESSES.USDC,
       abi: ABIS.USDC,
       functionName: 'approve',
-      args: [ADDRESSES.SHARES_REGISTRY, 1000000000000000000n],
+      args: [ADDRESSES.SHARES_REGISTRY, BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")],
+      account: address,
+      chain: arbitrum,
     });
   };
 
   const handleBuy = () => {
+    // Explicitly provide account and chain to resolve wagmi v2 type missing property errors
+    if (!parsedAmount || isNaN(parsedAmount) || !address) return;
     writeContract({
       address: ADDRESSES.SHARES_REGISTRY,
       abi: ABIS.SHARES_REGISTRY,
       functionName: 'buyShares',
       args: [BigInt(parsedAmount)],
+      account: address,
+      chain: arbitrum,
     });
   };
 
   const handleClaim = () => {
+    // Explicitly provide account and chain to resolve wagmi v2 type missing property errors
+    if (!claimRoundId || !address) return;
     writeContract({
       address: ADDRESSES.SHARES_REGISTRY,
       abi: ABIS.SHARES_REGISTRY,
       functionName: 'claimRewards',
       args: [BigInt(claimRoundId)],
+      account: address,
+      chain: arbitrum,
     });
   };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-6xl mx-auto animate-in fade-in duration-700 pb-12">
       <div className="lg:col-span-7 space-y-6">
-        {/* Buy Section */}
         <div className="bg-[#111] p-8 rounded-[2.5rem] border border-gray-800 shadow-2xl space-y-8">
           <div className="flex items-center gap-4 mb-2">
             <div className="p-3 bg-purple-500/10 rounded-2xl">
@@ -130,7 +140,6 @@ const SharesView: React.FC = () => {
           </div>
         </div>
 
-        {/* Claim Section */}
         <div className="bg-[#111] p-8 rounded-[2.5rem] border border-gray-800 shadow-xl space-y-6">
            <div className="flex items-center gap-4">
             <div className="p-3 bg-green-500/10 rounded-2xl">

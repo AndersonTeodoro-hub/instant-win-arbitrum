@@ -1,6 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+// Import arbitrum chain for explicit inclusion in writeContract calls
+import { arbitrum } from 'wagmi/chains';
 import { ADDRESSES, ABIS } from '../constants';
 import { UserPlus, CheckCircle2, XCircle, Search, Loader2 } from 'lucide-react';
 
@@ -34,12 +36,16 @@ const UsernameView: React.FC = () => {
   }, [isSuccess, refetchUsername]);
 
   const handleRegister = () => {
-    if (!usernameInput) return;
+    // Ensure both usernameInput and address are available before proceeding
+    if (!usernameInput || !address) return;
+    // Explicitly provide account and chain to resolve wagmi v2 type missing property errors
     writeContract({
       address: ADDRESSES.USERNAME_REGISTRY,
       abi: ABIS.USERNAME_REGISTRY,
       functionName: 'registerUsername',
       args: [usernameInput],
+      account: address,
+      chain: arbitrum,
     });
   };
 
