@@ -50,61 +50,62 @@ const UsernameView: React.FC = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in duration-500">
-      <div className="text-center space-y-2">
-        <h2 className="text-3xl font-bold">Your Identity</h2>
-        <p className="text-gray-500">Register a unique username on Arbitrum One to identify yourself across the suite.</p>
+    <div class="max-w-2xl mx-auto space-y-8 animate-in fade-in duration-500">
+      <div class="text-center space-y-2">
+        <h2 class="text-3xl font-bold">Your Identity</h2>
+        <p class="text-gray-500">Register a unique username on Arbitrum One to identify yourself across the suite.</p>
       </div>
 
       {currentUsername ? (
-        <div className="bg-green-500/5 border border-green-500/20 p-8 rounded-3xl text-center space-y-4">
-          <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-2">
-            <CheckCircle2 className="text-green-500" size={32} />
+        <div class="bg-green-500/5 border border-green-500/20 p-8 rounded-3xl text-center space-y-4">
+          <div class="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-2">
+            <CheckCircle2 class="text-green-500" size={32} />
           </div>
-          <div className="space-y-1">
-            <p className="text-gray-400 text-sm">You are registered as</p>
-            <h3 className="text-4xl font-bold text-green-400">@{currentUsername}</h3>
+          <div class="space-y-1">
+            <p class="text-gray-400 text-sm">You are registered as</p>
+            <h3 class="text-4xl font-bold text-green-400">@{currentUsername}</h3>
           </div>
-          <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Username Registry Verified</p>
+          <p class="text-xs text-gray-500 uppercase tracking-widest font-bold">Username Registry Verified</p>
         </div>
       ) : (
-        <div className="bg-[#111] border border-gray-800 p-8 rounded-3xl shadow-xl space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-gray-400 ml-1">Choose Username</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-4 flex items-center text-gray-500">
+        <div class="bg-[#111] border border-gray-800 p-8 rounded-3xl shadow-xl space-y-6">
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-gray-400 ml-1">Choose Username</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-4 flex items-center text-gray-500">
                 <Search size={18} />
               </div>
               <input
                 type="text"
                 value={usernameInput}
-                onChange={(e) => setUsernameInput(e.target.value)}
+                // Cast event to any to access target.value in environments with native Event types for React handlers
+                onChange={(e: any) => setUsernameInput(e.target.value)}
                 placeholder="Enter username (min 3 chars)..."
-                className="w-full bg-gray-900/50 border border-gray-800 rounded-2xl py-4 pl-12 pr-4 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all placeholder:text-gray-700"
+                class="w-full bg-gray-900/50 border border-gray-800 rounded-2xl py-4 pl-12 pr-4 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all placeholder:text-gray-700"
               />
-              <div className="absolute inset-y-0 right-4 flex items-center">
+              <div class="absolute inset-y-0 right-4 flex items-center">
                 {isChecking ? (
-                  <Loader2 className="animate-spin text-blue-500" size={20} />
+                  <Loader2 class="animate-spin text-blue-500" size={20} />
                 ) : usernameInput.length >= 3 ? (
                   isAvailable ? (
-                    <div className="flex items-center gap-1 text-xs font-bold text-green-500 bg-green-500/10 px-2 py-1 rounded-md">
+                    <div class="flex items-center gap-1 text-xs font-bold text-green-500 bg-green-500/10 px-2 py-1 rounded-md">
                       <CheckCircle2 size={14} /> Available
                     </div>
                   ) : (
-                    <div className="flex items-center gap-1 text-xs font-bold text-red-500 bg-red-500/10 px-2 py-1 rounded-md">
+                    <div class="flex items-center gap-1 text-xs font-bold text-red-500 bg-red-500/10 px-2 py-1 rounded-md">
                       <XCircle size={14} /> Taken
                     </div>
                   )
                 ) : null}
               </div>
             </div>
-            <p className="text-[10px] text-gray-600 ml-1">Must be between 3 and 32 characters. Avoid special characters.</p>
+            <p class="text-[10px] text-gray-600 ml-1">Must be between 3 and 32 characters. Avoid special characters.</p>
           </div>
 
           <button
             onClick={handleRegister}
             disabled={!isAvailable || isTxPending || isConfirming || usernameInput.length < 3}
-            className={`
+            class={`
               w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all duration-300
               ${isAvailable && !isTxPending && !isConfirming
                 ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-[0_10px_30px_rgba(37,99,235,0.3)] hover:-translate-y-1'
@@ -113,7 +114,7 @@ const UsernameView: React.FC = () => {
           >
             {(isTxPending || isConfirming) ? (
               <>
-                <Loader2 className="animate-spin" size={24} />
+                <Loader2 class="animate-spin" size={24} />
                 Processing...
               </>
             ) : (
@@ -125,8 +126,8 @@ const UsernameView: React.FC = () => {
           </button>
 
           {writeError && (
-            <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs flex gap-2">
-              <XCircle className="shrink-0" size={16} />
+            <div class="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs flex gap-2">
+              <XCircle class="shrink-0" size={16} />
               <span>{writeError.message.includes('UsernameAlreadyTaken') ? 'This username is already taken.' : 'Failed to register. Ensure you don\'t already have a username.'}</span>
             </div>
           )}

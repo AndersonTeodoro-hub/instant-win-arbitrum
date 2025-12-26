@@ -87,81 +87,83 @@ const SharesView: React.FC = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-6xl mx-auto animate-in fade-in duration-700 pb-12">
-      <div className="lg:col-span-7 space-y-6">
-        <div className="bg-[#111] p-8 rounded-[2.5rem] border border-gray-800 shadow-2xl space-y-8">
-          <div className="flex items-center gap-4 mb-2">
-            <div className="p-3 bg-purple-500/10 rounded-2xl">
-              <PieChart className="text-purple-500" size={28} />
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-6xl mx-auto animate-in fade-in duration-700 pb-12">
+      <div class="lg:col-span-7 space-y-6">
+        <div class="bg-[#111] p-8 rounded-[2.5rem] border border-gray-800 shadow-2xl space-y-8">
+          <div class="flex items-center gap-4 mb-2">
+            <div class="p-3 bg-purple-500/10 rounded-2xl">
+              <PieChart class="text-purple-500" size={28} />
             </div>
             <div>
-              <h2 className="text-2xl font-bold">Buy Protocol Shares</h2>
-              <p className="text-gray-500 text-sm">Convert USDC to protocol shares and participate in growth.</p>
+              <h2 class="text-2xl font-bold">Buy Protocol Shares</h2>
+              <p class="text-gray-500 text-sm">Convert USDC to protocol shares and participate in growth.</p>
             </div>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex justify-between text-sm px-1">
-              <label className="text-gray-400 font-medium">Amount to Purchase</label>
-              <span className="text-gray-500">Balance: {usdcBalance ? formatUnits(usdcBalance, 6) : '0'} USDC</span>
+          <div class="space-y-4">
+            <div class="flex justify-between text-sm px-1">
+              <label class="text-gray-400 font-medium">Amount to Purchase</label>
+              <span class="text-gray-500">Balance: {usdcBalance ? formatUnits(usdcBalance, 6) : '0'} USDC</span>
             </div>
-            <div className="relative">
+            <div class="relative">
               <input
                 type="number"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="w-full bg-gray-900/50 border border-gray-800 rounded-3xl py-6 px-6 text-3xl font-bold focus:outline-none focus:ring-2 focus:ring-purple-500/40 transition-all"
+                // Cast event to any to access target.value in environments with native Event types for React handlers
+                onChange={(e: any) => setAmount(e.target.value)}
+                class="w-full bg-gray-900/50 border border-gray-800 rounded-3xl py-6 px-6 text-3xl font-bold focus:outline-none focus:ring-2 focus:ring-purple-500/40 transition-all"
                 min="1"
               />
-              <div className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg">SHARES</div>
+              <div class="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg">SHARES</div>
             </div>
           </div>
 
-          <div className="space-y-3 pt-2">
+          <div class="space-y-3 pt-2">
             {needsApproval ? (
               <button
                 onClick={handleApprove}
                 disabled={isTxPending || isConfirming}
-                className="w-full bg-blue-600 hover:bg-blue-500 text-white py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 shadow-xl transition-all"
+                class="w-full bg-blue-600 hover:bg-blue-500 text-white py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 shadow-xl transition-all"
               >
-                {(isTxPending || isConfirming) ? <Loader2 className="animate-spin" /> : <ShieldCheck size={24} />}
+                {(isTxPending || isConfirming) ? <Loader2 class="animate-spin" /> : <ShieldCheck size={24} />}
                 Approve USDC Spending
               </button>
             ) : (
               <button
                 onClick={handleBuy}
                 disabled={isTxPending || isConfirming || !parsedAmount}
-                className="w-full bg-purple-600 hover:bg-purple-500 text-white py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 shadow-xl transition-all"
+                class="w-full bg-purple-600 hover:bg-purple-500 text-white py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 shadow-xl transition-all"
               >
-                {(isTxPending || isConfirming) ? <Loader2 className="animate-spin" /> : <ShoppingCart size={24} />}
+                {(isTxPending || isConfirming) ? <Loader2 class="animate-spin" /> : <ShoppingCart size={24} />}
                 Purchase Shares
               </button>
             )}
           </div>
         </div>
 
-        <div className="bg-[#111] p-8 rounded-[2.5rem] border border-gray-800 shadow-xl space-y-6">
-           <div className="flex items-center gap-4">
-            <div className="p-3 bg-green-500/10 rounded-2xl">
-              <Gift className="text-green-500" size={28} />
+        <div class="bg-[#111] p-8 rounded-[2.5rem] border border-gray-800 shadow-xl space-y-6">
+           <div class="flex items-center gap-4">
+            <div class="p-3 bg-green-500/10 rounded-2xl">
+              <Gift class="text-green-500" size={28} />
             </div>
             <div>
-              <h2 className="text-xl font-bold">Claim Rewards</h2>
-              <p className="text-gray-500 text-sm">Collect your portion of protocol earnings.</p>
+              <h2 class="text-xl font-bold">Claim Rewards</h2>
+              <p class="text-gray-500 text-sm">Collect your portion of protocol earnings.</p>
             </div>
           </div>
-          <div className="flex gap-4">
+          <div class="flex gap-4">
              <input
                 type="number"
                 value={claimRoundId}
-                onChange={(e) => setClaimRoundId(e.target.value)}
+                // Cast event to any to access target.value in environments with native Event types for React handlers
+                onChange={(e: any) => setClaimRoundId(e.target.value)}
                 placeholder="Round ID"
-                className="flex-1 bg-gray-900/50 border border-gray-800 rounded-2xl py-3 px-4 focus:outline-none"
+                class="flex-1 bg-gray-900/50 border border-gray-800 rounded-2xl py-3 px-4 focus:outline-none"
               />
               <button
                 onClick={handleClaim}
                 disabled={isTxPending || isConfirming}
-                className="px-8 bg-green-600 hover:bg-green-500 text-white rounded-2xl font-bold transition-all disabled:opacity-50"
+                class="px-8 bg-green-600 hover:bg-green-500 text-white rounded-2xl font-bold transition-all disabled:opacity-50"
               >
                 Claim
               </button>
@@ -169,21 +171,21 @@ const SharesView: React.FC = () => {
         </div>
       </div>
 
-      <div className="lg:col-span-5 space-y-6">
-        <div className="bg-[#111] p-8 rounded-[2.5rem] border border-gray-800 shadow-xl">
-          <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
-            <TrendingUp size={20} className="text-green-500" />
+      <div class="lg:col-span-5 space-y-6">
+        <div class="bg-[#111] p-8 rounded-[2.5rem] border border-gray-800 shadow-xl">
+          <h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+            <TrendingUp size={20} class="text-green-500" />
             Market Insights
           </h3>
-          <div className="space-y-6">
+          <div class="space-y-6">
             <StatRow label="Available Supply" value={availableShares?.toString() || '0'} sub="Shares remaining" />
             <StatRow label="Pool Health" value="100%" sub="Optimal" />
             <StatRow label="Network Fee" value="Low" sub="Arbitrum Standard" />
           </div>
         </div>
-        <div className="bg-gray-900/30 border border-dashed border-gray-800 p-6 rounded-3xl flex items-start gap-4">
-          <AlertCircle className="text-gray-500 mt-1 shrink-0" size={20} />
-          <p className="text-xs text-gray-500 leading-relaxed">
+        <div class="bg-gray-900/30 border border-dashed border-gray-800 p-6 rounded-3xl flex items-start gap-4">
+          <AlertCircle class="text-gray-500 mt-1 shrink-0" size={20} />
+          <p class="text-xs text-gray-500 leading-relaxed">
             Shares are non-refundable through the protocol. Rewards are distributed periodically based on round snapshots.
           </p>
         </div>
@@ -193,12 +195,12 @@ const SharesView: React.FC = () => {
 };
 
 const StatRow: React.FC<{ label: string; value: string; sub: string }> = ({ label, value, sub }) => (
-  <div className="flex justify-between items-end">
+  <div class="flex justify-between items-end">
     <div>
-      <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">{label}</p>
-      <p className="text-xs text-gray-600 font-medium">{sub}</p>
+      <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">{label}</p>
+      <p class="text-xs text-gray-600 font-medium">{sub}</p>
     </div>
-    <div className="text-xl font-bold">{value}</div>
+    <div class="text-xl font-bold">{value}</div>
   </div>
 );
 
